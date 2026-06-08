@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Temario de examen · Las seis dimensiones de tu proyecto · Pública II 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500&family=Roboto+Mono&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blue:#3356F6;
+    --black:#000000;
+    --offblack:#231F20;
+    --offwhite:#F1F2F2;
+    --white:#FFFFFF;
+    --line:#cfd0cf;
+    --muted:#6f6c6d;
+    --font:'Plus Jakarta Sans','Helvetica Neue',Helvetica,Arial,system-ui,sans-serif;
+    --mono:'Roboto Mono','SF Mono',Menlo,Monaco,Consolas,'Liberation Mono',monospace;
+    --maxw:880px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; background:var(--offwhite); color:var(--offblack);
+    font-family:var(--font); font-weight:400;
+    font-size:18px; line-height:1.6; text-align:left;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 32px 120px;}
+  .mono{font-family:var(--mono);}
+
+  /* Hero */
+  header.hero{background:var(--black); color:var(--white); border-bottom:3px solid var(--blue);}
+  .hero-inner{max-width:var(--maxw); margin:0 auto; padding:72px 32px 56px;}
+  .kicker{font-family:var(--mono); font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:var(--blue); margin:0 0 22px;}
+  h1{font-size:42px; line-height:1.1; margin:0 0 18px; font-weight:400; letter-spacing:.005em; max-width:20ch;}
+  .hero-sub{font-size:19px; color:var(--offwhite); margin:0; max-width:60ch; font-weight:400;}
+  .hero-meta{font-family:var(--mono); font-size:12.5px; color:#8f8c8d; margin-top:34px; letter-spacing:.01em;}
+
+  /* Lead */
+  .lead{font-size:19px; padding:44px 0 8px;}
+  .lead p:first-child{margin-top:0;}
+  .lead strong{font-weight:500;}
+
+  /* Legend */
+  .legend{display:flex; gap:26px; flex-wrap:wrap; font-family:var(--mono); font-size:12.5px; margin:20px 0 6px; text-transform:uppercase; letter-spacing:.04em;}
+  .legend span{display:inline-flex; align-items:center; gap:9px;}
+  .legend .mk{width:11px; height:11px; display:inline-block;}
+  .mk-a{background:var(--offblack);}
+  .mk-b{background:var(--blue);}
+  .mk-c{background:transparent; border:1.5px solid var(--offblack);}
+  .legend-note{font-size:16px; color:#3a3738; margin-top:8px; max-width:66ch;}
+  .legend-note b{font-family:var(--mono); font-size:13px;}
+
+  /* Section dividers / dimension headers */
+  section.dim{margin-top:34px; padding-top:34px; border-top:1px solid var(--line);}
+  .dim-num{font-family:var(--mono); font-weight:400; font-size:12px; letter-spacing:.14em; color:var(--blue); text-transform:uppercase; margin:0;}
+  h2{font-size:29px; line-height:1.15; margin:8px 0 4px; font-weight:400; letter-spacing:.004em;}
+  h2 .dim-tag{display:block; font-family:var(--mono); font-weight:400; font-size:14px; color:var(--muted); margin-top:7px; letter-spacing:0;}
+
+  /* Tier blocks A/B/C */
+  .tier{margin:28px 0 10px; padding-left:20px;}
+  .tier-A{border-left:3px solid var(--offblack);}
+  .tier-B{border-left:3px solid var(--blue);}
+  .tier-C{border-left:3px solid var(--offblack);}
+  .tier-label{font-family:var(--font); font-weight:500; font-size:13px; letter-spacing:.06em; text-transform:uppercase;
+    display:inline-flex; align-items:center; gap:10px; margin:0 0 6px;}
+  .tier-label .mk{width:11px; height:11px; display:inline-block;}
+  .tier-A .tier-label{color:var(--offblack);}
+  .tier-B .tier-label{color:var(--blue);}
+  .tier-C .tier-label{color:var(--offblack);}
+  .tier-sub{font-family:var(--mono); font-size:12px; color:var(--muted); font-weight:400; margin:16px 0 2px; text-transform:uppercase; letter-spacing:.06em;}
+
+  ol.q{margin:8px 0 4px; padding-left:1.6em;}
+  ol.q li{margin:10px 0; padding-left:6px;}
+  ol.q li::marker{font-family:var(--mono); color:var(--blue); font-size:14px;}
+
+  /* LLM warning box */
+  .llm{background:var(--white); border:1px solid var(--line); border-left:3px solid var(--blue);
+    padding:16px 20px; margin:22px 0 4px; font-size:16.5px;}
+  .llm b{font-family:var(--mono); font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:var(--blue); display:block; margin-bottom:6px; font-weight:400;}
+
+  /* How-to */
+  .howto{background:var(--white); border:1px solid var(--line); padding:10px 30px 24px; margin:28px 0;}
+  .howto h3{font-family:var(--mono); font-size:13px; letter-spacing:.06em; text-transform:uppercase; color:var(--blue); margin:22px 0 6px; font-weight:400;}
+  ol.steps{counter-reset:step; list-style:none; padding-left:0; margin:10px 0;}
+  ol.steps li{position:relative; padding-left:48px; margin:15px 0;}
+  ol.steps li::before{
+    counter-increment:step; content:counter(step,decimal-leading-zero);
+    position:absolute; left:0; top:2px; width:34px; height:26px;
+    background:var(--blue); color:var(--white); font-family:var(--mono); font-size:12px;
+    display:flex; align-items:center; justify-content:center; letter-spacing:.02em;
+  }
+  ol.steps li b{font-weight:500;}
+  blockquote{margin:18px 0; padding:12px 20px; border-left:3px solid var(--blue); background:var(--offwhite); font-size:16.5px; color:var(--offblack);}
+  blockquote b{font-weight:500;}
+
+  /* Checklist */
+  ul.check{list-style:none; padding-left:0; margin:16px 0;}
+  ul.check li{position:relative; padding-left:36px; margin:13px 0;}
+  ul.check li::before{content:""; position:absolute; left:0; top:4px; width:18px; height:18px; border:2px solid var(--offblack);}
+  ul.check li b{font-weight:500;}
+
+  /* Trap / transversal */
+  ol.trap{padding-left:1.6em;}
+  ol.trap li{margin:12px 0;}
+  ol.trap li::marker{font-family:var(--mono); color:var(--blue); font-size:14px;}
+  ol.trap b{font-weight:500; color:var(--offblack);}
+
+  /* Killer five */
+  .killer{background:var(--offblack); color:var(--offwhite); padding:8px 36px 30px; margin:34px 0;}
+  .killer .dim-num{color:var(--blue);}
+  .killer h2{color:var(--white);}
+  .killer p.intro{color:#c9c6c7;}
+  .killer ol{padding-left:1.5em;}
+  .killer ol li{margin:13px 0; font-size:19px;}
+  .killer ol li::marker{color:var(--blue); font-family:var(--mono); font-size:15px;}
+
+  /* Glossary */
+  dl.gloss{margin:16px 0;}
+  dl.gloss dt{font-family:var(--font); font-weight:500; font-size:16px; color:var(--offblack); margin-top:18px;}
+  dl.gloss dd{margin:3px 0 0; font-size:16.5px; color:#34302f;}
+
+  footer{margin-top:54px; padding-top:24px; border-top:1px solid var(--line); font-family:var(--mono); font-size:12.5px; color:var(--muted); line-height:1.7;}
+
+  @media (max-width:560px){
+    body{font-size:16.5px;} h1{font-size:31px;} h2{font-size:24px;}
+    .hero-inner{padding:52px 22px 40px;} .wrap{padding:0 20px 80px;}
+  }
+  @media print{
+    body{background:var(--white); font-size:11.5pt; color:#000;}
+    header.hero{background:#000 !important; -webkit-print-color-adjust:exact; print-color-adjust:exact;}
+    .killer{background:#231F20 !important; -webkit-print-color-adjust:exact; print-color-adjust:exact;}
+    .llm,.howto,blockquote,ol.steps li::before{-webkit-print-color-adjust:exact; print-color-adjust:exact;}
+    section.dim{page-break-inside:avoid;}
+    .wrap{padding-bottom:0;}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <p class="kicker">Pública II · 2026 · Emprendimiento Público</p>
+    <h1>Las seis dimensiones de tu proyecto</h1>
+    <p class="hero-sub">Lo que necesitas poder contestar antes de sentarte frente a un panel de personas expertas. Un solo temario para los seis equipos.</p>
+    <p class="hero-meta">Examen oral · Clase del 8 de junio · Ensayo general · DemoDay 11 jun · Taller de cierre 15–16 jun</p>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="lead">
+    <p><strong>Qué es este documento.</strong> El temario: la lista de lo que debes poder contestar de tu proyecto sin dudar. Cada pregunta puede salir de un jurado académico, de quien domina el sector mejor que tú, de la persona a la que sirves, o de quien pierde si tu proyecto funciona. No hay aviso previo de cuál van a preguntar. La regla es sencilla: cuando te pregunten cualquiera de estas, debes tener una respuesta correcta, propia y defendible.</p>
+    <p>Llevas un año en tu proyecto, y el temario está calibrado a eso: no incluye preguntas de introducción ni de definición. Cada pregunta supone que ya conoces tu proyecto y va un paso más allá. No basta con decir qué haces; conviene explicar por qué elegiste ese camino, qué ocurre cuando la idea se aplica en la realidad, y con qué evidencia y qué fuentes sostienes lo que afirmas.</p>
+  </div>
+
+  <div class="legend">
+    <span><span class="mk mk-a"></span> A · Tu proyecto</span>
+    <span><span class="mk mk-b"></span> B · Lo que pregunta quien conoce el sector</span>
+    <span><span class="mk mk-c"></span> C · El marco conceptual</span>
+  </div>
+  <p class="legend-note">Un panel examina en tres registros al mismo tiempo. <b>A</b> es la defensa de tu caso. <b>B</b> reúne las preguntas de quien conoce el sector mejor que tú; solo se preparan con trabajo de campo. <b>C</b> es la teoría del emprendimiento público que el panel académico espera que sepas usar para situar tu proyecto.</p>
+
+  <div class="howto">
+    <h3>Cómo se trabaja hoy · primera hora</h3>
+    <ol class="steps">
+      <li><b>Contesten el temario con su LLM.</b> Pídanle que responda cada pregunta con la información de su proyecto. Tarda minutos.</li>
+      <li><b>Corrijan lo que no tiene sentido humano.</b> El LLM va a producir respuestas que suenan bien y están mal: una cifra que no levantaron, una alianza que no existe, un mecanismo que no es el suyo, un riesgo suavizado, una fuente que no leyeron. Su tarea es encontrar dónde la respuesta plausible es falsa y reemplazarla por la verdadera, aunque sea menos vistosa.</li>
+      <li><b>Esa corrección es el examen de hoy.</b> Quien no detecta dónde el LLM se equivocó sobre su propio proyecto, todavía no lo domina. Entregan un documento por equipo con las respuestas corregidas a mano, marcando qué cambiaron y por qué.</li>
+      <li><b>El jueves presentan y defienden.</b> No vuelven a presentar desde cero: llegan con las respuestas trabajadas y las sostienen ante preguntas en vivo, dimensión por dimensión.</li>
+    </ol>
+    <blockquote>Al final de cada dimensión hay un recuadro <b>Dónde suele fallar el LLM</b>. Úsenlo como guía de qué buscar al corregir.</blockquote>
+  </div>
+
+  <!-- DIM 1 -->
+  <section class="dim">
+    <p class="dim-num">Dimensión 01</p>
+    <h2>Legado<span class="dim-tag">Para qué existe el proyecto en términos profundos</span></h2>
+
+    <div class="tier tier-A">
+      <p class="tier-label"><span class="mk mk-a"></span>A · Tu proyecto</p>
+      <ol class="q">
+        <li>¿Qué queda sin atender si nadie hace esto? Lo que seguiría pendiente si tu proyecto no existiera y nadie lo sustituyera, más allá del problema inmediato que resuelves.</li>
+        <li>El problema lleva años ahí y mucha gente lo ha intentado. ¿Por qué sigue sin resolverse? Si la respuesta es "es complejo y multifactorial", todavía no tienes teoría del problema.</li>
+        <li>Nombra dos actores concretos que ganan con que el problema continúe, y con qué ganan: presupuesto, poder, relevancia, contratos.</li>
+        <li>¿Qué supuesto social hace que la población afectada acepte el problema como normal?</li>
+        <li>¿Qué deja tu proyecto cuando deje de operar? Una capacidad instalada, una norma cambiada, una práctica nueva. Si la respuesta es "el servicio se acaba", no hay legado.</li>
+        <li>¿Por qué este equipo y por qué ahora? Qué hace que no fuera buena idea hace cinco años ni lo sea dentro de cinco.</li>
+      </ol>
+    </div>
+
+    <div class="tier tier-B">
+      <p class="tier-label"><span class="mk mk-b"></span>B · Lo que pregunta quien conoce el sector</p>
+      <ol class="q" start="7">
+        <li>Defiende la existencia del proyecto ante quien no comparte tus valores: qué argumento usas con quien solo mira costo y resultado.</li>
+        <li>¿Prefieres que tu proyecto exista a media escala para siempre, o que transforme el problema y desaparezca en tres años? Revela si te importa el problema o tu proyecto.</li>
+        <li>Si tu proyecto tiene éxito rotundo, ¿el problema se acaba, se desplaza o cambia de forma? Dar por hecho que se erradica suele indicar que no se entendió a fondo.</li>
+      </ol>
+    </div>
+
+    <div class="tier tier-C">
+      <p class="tier-label"><span class="mk mk-c"></span>C · El marco conceptual</p>
+      <ol class="q" start="10">
+        <li>¿Qué valor público crea tu proyecto, en el sentido de Mark Moore, y por qué no se mide como ganancia privada? Si no lo nombras en términos no financieros, no tienes legado articulado.</li>
+        <li>¿Tu problema es técnico o adaptativo (Heifetz)? Un desafío adaptativo tratado como técnico se perpetúa. ¿De qué tipo es el tuyo?</li>
+        <li>¿En qué sentido tu problema es perverso (Rittel y Webber)? Nombra una consecuencia no deseada que tu propia solución podría producir.</li>
+      </ol>
+    </div>
+
+    <div class="llm"><b>Dónde suele fallar el LLM</b>Va a escribir un propósito noble y genérico ("garantizar el acceso equitativo y resiliente a...") que aplica a cualquier proyecto del salón. El legado real es el tuyo, específico, con el actor concreto que pierde y la práctica concreta que queda.</div>
+  </section>
+
+  <!-- DIM 2 -->
+  <section class="dim">
+    <p class="dim-num">Dimensión 02</p>
+    <h2>Comunidad<span class="dim-tag">La red completa de relaciones del proyecto</span></h2>
+
+    <div class="tier tier-A">
+      <p class="tier-label"><span class="mk mk-a"></span>A · Tu proyecto</p>
+      <p class="tier-sub">Personas beneficiarias</p>
+      <ol class="q">
+        <li>¿Quiénes son específicamente, cuántas son y dónde están? Un número estimado y una ubicación concreta. "La ciudadanía" no es respuesta.</li>
+        <li>¿Qué relación tienen: reciben, producen, evalúan con voz, o pueden detenerlo? Una como dominante. ¿La elegiste o la heredaste por inercia?</li>
+        <li>¿Qué autonomía respeta el proyecto a quienes sirve y qué autonomía les sustituye?</li>
+        <li>¿Hay personas afectadas que no se benefician de manera directa y a quienes les complicas algo? Toda intervención afecta a más gente de la que sirve.</li>
+      </ol>
+      <p class="tier-sub">Quienes tienen poder</p>
+      <ol class="q" start="5">
+        <li>Nombra tres partes que ganan si funcionas y tres que pierden, por nombre o rol. La de quién pierde es la pregunta más incómoda y la que más rápido revela un proyecto poco trabajado.</li>
+        <li>¿Quién puede detener el proyecto y qué incentivo tendría para hacerlo?</li>
+        <li>¿Qué actor con poder de decisión necesita estar a favor? Nómbralo y di si ya hablaste con esa persona.</li>
+        <li>¿Qué alianza coincide contigo en una parte y diverge en otra? En qué punto se separan, y qué pasa el día que esa divergencia importe.</li>
+      </ol>
+      <p class="tier-sub">Equipo y gobernanza interna</p>
+      <ol class="q" start="9">
+        <li>¿Quién toma las decisiones estratégicas: una persona, varias, un consejo?</li>
+        <li>¿Cómo resuelven un desacuerdo serio? Hay regla formal o se negocia cada vez. Si recae en una sola persona: ¿qué pasa el día que se enferme, la amenacen o se canse?</li>
+        <li>Si quien fundó el proyecto se retira mañana, ¿el proyecto sigue o se acaba?</li>
+        <li>¿Cómo se entera una persona beneficiaria de qué haces con los recursos que recibes? Mecanismo concreto, no "somos transparentes".</li>
+        <li>Dibuja tu gobernanza actual y la deseada a tres años, con quién decide qué tipo de decisión. Si no puedes dibujar las dos, está sin pensar.</li>
+      </ol>
+    </div>
+
+    <div class="tier tier-B">
+      <p class="tier-label"><span class="mk mk-b"></span>B · Lo que pregunta quien conoce el sector</p>
+      <ol class="q" start="14">
+        <li>¿Con cuál de las partes que pierden ya conversaste, y qué entendiste de su lógica que no sabías antes? Sin eso, tu estrategia es una hipótesis sin probar.</li>
+        <li>La población a la que sirves, ¿sabe que tu proyecto la considera beneficiaria y aceptó el rol que le diste? Muchos proyectos asignan papeles que la gente no aceptó.</li>
+        <li>Cuando la alianza clave y la población beneficiaria quieren cosas distintas, ¿a quién le haces caso y por qué?</li>
+        <li>¿Tu proyecto crea dependencia o capacidad? Cómo lo sabes, y qué harías distinto si descubres que crea dependencia.</li>
+      </ol>
+    </div>
+
+    <div class="tier tier-C">
+      <p class="tier-label"><span class="mk mk-c"></span>C · El marco conceptual</p>
+      <ol class="q" start="18">
+        <li>¿Tratas a la población como clientela o como ciudadanía con derechos y voz? Solo clientela es asistencialismo técnico; solo sujeto político es ineficiencia ideológica. ¿Dónde te paras?</li>
+        <li>¿Qué objeto fronterizo (Star y Griesemer) usa tu proyecto para que actores de mundos distintos se entiendan sin perder su identidad?</li>
+        <li>¿Tu relación con la población es co-creación real o consulta cosmética? Qué decisión concreta ha cambiado la gente con su voz.</li>
+      </ol>
+    </div>
+
+    <div class="llm"><b>Dónde suele fallar el LLM</b>Va a llenar el mapa de actores con categorías ("gobierno, academia, sociedad civil") en vez de nombres, y casi siempre va a omitir o suavizar a quién perjudicas. Esa es la corrección más importante de la hora: pon los nombres reales y di con todas sus letras quién pierde.</div>
+  </section>
+
+  <!-- DIM 3 -->
+  <section class="dim">
+    <p class="dim-num">Dimensión 03</p>
+    <h2>Aprendizaje<span class="dim-tag">Qué sabe el proyecto y qué aprende</span></h2>
+
+    <div class="tier tier-A">
+      <p class="tier-label"><span class="mk mk-a"></span>A · Tu proyecto</p>
+      <p class="tier-sub">Mecanismo de cambio</p>
+      <ol class="q">
+        <li>¿Cuál es el mecanismo específico que activas? Uno solo, en una frase. "Múltiples vías" significa que no han elegido.</li>
+        <li>¿Por qué ese mecanismo y no otro? Por qué es más eficaz que regular, asignar presupuesto, organizar a la gente o cambiar la narrativa.</li>
+        <li>¿Qué evidencia hay de que ese mecanismo, en un contexto comparable, ya produjo el cambio que esperas?</li>
+        <li>Si tu mecanismo fuera ingenuo, ¿qué señal lo mostraría a tiempo?</li>
+      </ol>
+      <p class="tier-sub">Evidencia y conocimiento</p>
+      <ol class="q" start="5">
+        <li>¿Qué prueba real tienes de que funciona? MVP, prototipo, piloto, datos de campo, marco legal verificado por una voz externa. No una intención.</li>
+        <li>¿Qué dato levantaste por tu cuenta y qué tomaste de fuentes secundarias? Sé exacto en la frontera.</li>
+        <li>¿Qué sabe tu proyecto que no sabe nadie más que trabaja el mismo problema?</li>
+        <li>¿Qué conocimiento produces que sirva a quien venga después: datos abiertos, lecciones, manuales replicables?</li>
+      </ol>
+      <p class="tier-sub">Aprendizaje continuo</p>
+      <ol class="q" start="9">
+        <li>¿Cómo aprende tu proyecto de sus errores? Tiene revisión formal o se queda en la cabeza del equipo.</li>
+        <li>¿Cuál de tus supuestos es el más expuesto a que la realidad lo desmienta, y cómo lo sabrías antes de que sea tarde?</li>
+      </ol>
+    </div>
+
+    <div class="tier tier-B">
+      <p class="tier-label"><span class="mk mk-b"></span>B · Lo que pregunta quien conoce el sector</p>
+      <ol class="q" start="11">
+        <li>Tu cifra propia, ¿cómo la levantaste? Método, muestra, cuándo, quién. Una voz experta la cala en treinta segundos.</li>
+        <li>¿Qué te diría una persona especialista de tu sector que está mal en tu diagnóstico? Si no puedes anticiparlo, no has hablado con ninguna.</li>
+        <li>¿Probaste tu mecanismo contra la hipótesis nula: qué pasaría si no hicieras nada? Mucho de lo que se atribuye a la intervención iba a pasar igual.</li>
+        <li>¿Tu evidencia muestra correlación o causalidad? Cómo descartas que el efecto venga de otra cosa.</li>
+      </ol>
+    </div>
+
+    <div class="tier tier-C">
+      <p class="tier-label"><span class="mk mk-c"></span>C · El marco conceptual</p>
+      <ol class="q" start="15">
+        <li>¿Tu intervención es de explotación o de exploración (O'Reilly y Tushman)? ¿Mejoras lo existente o creas algo nuevo, y tu diseño es coherente con eso?</li>
+        <li>Modelo del iceberg: distingue eventos, patrones, estructuras y modelos mentales en tu problema. ¿En cuál nivel intervienes? Intervenir solo en los eventos no cambia el sistema.</li>
+        <li>¿Dónde estás en los tres horizontes: mejora del sistema actual (H1), innovación de transición (H2), o apuesta de futuro lejano (H3)? La mayoría de los proyectos viables viven en H2.</li>
+      </ol>
+    </div>
+
+    <div class="llm"><b>Dónde suele fallar el LLM</b>Va a inventarte una cifra propia o presentar como tuyo un dato de un reporte, y a citar fuentes pertinentes sin que las hayas leído. La cifra que defiendes tiene que ser una que levantaste y puedes explicar; la fuente que invocas, una cuyo argumento puedas resumir. Borra lo que no reconozcas.</div>
+  </section>
+
+  <!-- DIM 4 -->
+  <section class="dim">
+    <p class="dim-num">Dimensión 04</p>
+    <h2>Tecnología<span class="dim-tag">Las herramientas y la infraestructura</span></h2>
+
+    <div class="tier tier-A">
+      <p class="tier-label"><span class="mk mk-a"></span>A · Tu proyecto</p>
+      <ol class="q">
+        <li>¿Qué herramienta, plataforma o infraestructura usa tu proyecto para llegar a la población?</li>
+        <li>¿La tecnología es propia o de un tercero? Si es de un tercero, qué pasa si esa relación termina o suben el precio.</li>
+        <li>¿Cuánto cuesta mantenerla funcionando tres años, no solo arrancarla?</li>
+        <li>¿Quién la opera en el día a día: tu equipo, una empresa proveedora, la misma población usuaria?</li>
+        <li>¿Qué le pasa a tu proyecto si la tecnología falla una semana?</li>
+        <li>Si exiges que la población sepa usar un teléfono o una app, ¿qué porcentaje lo sabe hoy y qué haces con quien no?</li>
+      </ol>
+    </div>
+
+    <div class="tier tier-B">
+      <p class="tier-label"><span class="mk mk-b"></span>B · Lo que pregunta quien conoce el sector</p>
+      <ol class="q" start="7">
+        <li>¿Resuelves un problema técnico o usas la tecnología como vehículo de un cambio que en el fondo es político o social? Una voz experta lo detecta en un minuto.</li>
+        <li>¿Qué tienes que la tecnología no te da? Si todo tu valor está en la herramienta, alguien con más presupuesto te copia en seis meses.</li>
+        <li>¿Qué pasa con los datos de las personas que tocas? Quién los guarda, quién los ve, qué pasa si se filtran. Esto detiene iniciativas enteras.</li>
+        <li>¿Tu solución escala con el mismo costo unitario o se vuelve más cara por persona usuaria al crecer? Un piloto barato puede encarecerse al multiplicarse.</li>
+      </ol>
+    </div>
+
+    <div class="tier tier-C">
+      <p class="tier-label"><span class="mk mk-c"></span>C · El marco conceptual</p>
+      <ol class="q" start="11">
+        <li>Si usas IA o un algoritmo, ¿qué decide la máquina, qué decide una persona, y quién responde cuando se equivoca? Tecnología sin gobernanza adaptativa es la receta del fracaso público (caso PANAUT).</li>
+        <li>¿Preservas la soberanía sobre tu infraestructura y tus datos, o dependes de un tercero que controla la regla del juego?</li>
+        <li>¿Cuál es tu fuente única de verdad para decidir, y quién la cuida? Sin un dato confiable y mantenido, cada decisión se discute desde cero.</li>
+      </ol>
+    </div>
+
+    <div class="llm"><b>Dónde suele fallar el LLM</b>Va a describir la tecnología en su mejor versión y a callar el costo de mantenerla y la dependencia de un tercero. La pregunta que decide la viabilidad es quién paga su operación el año tres y qué pasa si quien la controla cambia las reglas.</div>
+  </section>
+
+  <!-- DIM 5 -->
+  <section class="dim">
+    <p class="dim-num">Dimensión 05</p>
+    <h2>Contexto<span class="dim-tag">El marco que el proyecto no puede ignorar</span></h2>
+
+    <div class="tier tier-A">
+      <p class="tier-label"><span class="mk mk-a"></span>A · Tu proyecto</p>
+      <p class="tier-sub">Régimen institucional</p>
+      <ol class="q">
+        <li>¿Bajo qué figura legal-administrativa operas? Programa público, asociación civil, empresa social, fideicomiso, norma mexicana, instrumento intergubernamental, asociación público-privada, sociedad de propósito.</li>
+        <li>¿Por qué esa figura y no otra? Qué te da y qué te quita en autoridad, capital y velocidad de decisión.</li>
+        <li>¿Qué puedes exigir, contratar, certificar o sancionar bajo esa figura?</li>
+      </ol>
+      <p class="tier-sub">Marco normativo</p>
+      <ol class="q" start="4">
+        <li>¿Qué ley o reglamento enmarca lo que puedes y no puedes hacer? ¿Operas dentro del marco existente o necesitas reformar algo?</li>
+        <li>¿Qué autoridad regula tu actividad y qué te exige?</li>
+      </ol>
+      <p class="tier-sub">Tiempo político</p>
+      <ol class="q" start="6">
+        <li>¿En qué momento del ciclo presupuestal y electoral entra tu proyecto? Qué ventana concreta tienes antes de que cambien las condiciones.</li>
+        <li>¿Qué le pasa en el próximo cambio de gobierno: sobrevive solo, requiere relegitimarse, o desaparece?</li>
+      </ol>
+      <p class="tier-sub">Restricciones ecológicas e institucionales</p>
+      <ol class="q" start="8">
+        <li>Si tocas agua, energía, suelo, alimentos o residuos, ¿cómo evitas generar un daño que después haya que limpiar?</li>
+        <li>¿Saturas algún recurso institucional ya estresado: el primer nivel de salud, un regulador, el presupuesto de una secretaría al límite?</li>
+      </ol>
+    </div>
+
+    <div class="tier tier-B">
+      <p class="tier-label"><span class="mk mk-b"></span>B · Lo que pregunta quien conoce el sector</p>
+      <ol class="q" start="10">
+        <li>¿Por qué el gobierno no lo está haciendo ya? Si la respuesta es "no se les ha ocurrido", no entendiste el contexto: casi siempre hay una razón institucional.</li>
+        <li>¿Qué pasa si una administración hostil quiere matar tu proyecto? Qué lo protege: una ley, un contrato, una coalición, la opinión pública.</li>
+        <li>¿Compites con un programa existente por el mismo presupuesto? Quién lo defiende hoy y por qué cedería.</li>
+        <li>¿Qué precedente o caso comparable conoces, y por qué a unos les fue bien y a otros mal?</li>
+      </ol>
+    </div>
+
+    <div class="tier tier-C">
+      <p class="tier-label"><span class="mk mk-c"></span>C · El marco conceptual</p>
+      <ol class="q" start="14">
+        <li>¿Cómo logras defensibilidad post-administración? El programa Oportunidades sobrevivió de un sexenio a otro porque entró a la ley y al presupuesto base; muchos proyectos desaparecen cuando cambia quien los patrocina. ¿Cuál es tu mecanismo?</li>
+        <li>¿Cómo te blindas contra la captura por un partido, una élite o un grupo de interés? Multilateralidad, transparencia radical, control ciudadano, diseño legal anti-captura.</li>
+        <li>Ante la incertidumbre profunda (Lempert y Walker), ¿qué movimientos sin arrepentimiento tomas, y qué disparadores activan un cambio de rumbo cuando ciertas condiciones se cumplan?</li>
+      </ol>
+    </div>
+
+    <div class="llm"><b>Dónde suele fallar el LLM</b>Va a elegir por ti la figura legal más sofisticada y a dar por hecho que cabe en el calendario político. El régimen mal elegido compromete al proyecto: el que necesita agilidad montado como programa federal se atasca en la burocracia; el que necesita permanencia montado como asociación civil se apaga cuando quien lo fundó se cansa. Verifica que la figura que aparece es la que de verdad decidieron, con sus consecuencias.</div>
+  </section>
+
+  <!-- DIM 6 -->
+  <section class="dim">
+    <p class="dim-num">Dimensión 06</p>
+    <h2>Proyectos<span class="dim-tag">La ejecución concreta en el tiempo</span></h2>
+
+    <div class="tier tier-A">
+      <p class="tier-label"><span class="mk mk-a"></span>A · Tu proyecto</p>
+      <p class="tier-sub">Próximos noventa días</p>
+      <ol class="q">
+        <li>¿Qué hace tu equipo, concretamente, entre el cierre del módulo y septiembre? Tareas verificables, no "consolidar el proyecto".</li>
+        <li>¿Qué decisión bloqueante tienen que tomar en las próximas dos semanas?</li>
+      </ol>
+      <p class="tier-sub">Roadmap</p>
+      <ol class="q" start="3">
+        <li>¿Cuáles son los cuatro a seis hitos del próximo año, con fecha, que una persona externa pueda comprobar?</li>
+        <li>¿Cuáles son los dos o tres hitos de escalamiento a tres años?</li>
+        <li>¿Qué rol no tienes hoy en el equipo y cuándo lo vas a tener?</li>
+      </ol>
+      <p class="tier-sub">Capital y modelo financiero</p>
+      <ol class="q" start="6">
+        <li>¿Cuánto cuesta operar el primer año, por categoría: nómina, infraestructura, materiales, viajes, contingencia?</li>
+        <li>¿De dónde sale cada peso? Cada fuente con monto, condición de desembolso y proveedor identificado o tipo.</li>
+        <li>¿Qué se ajusta, qué se cancela y qué se sostiene si la fuente principal no llega?</li>
+        <li>¿En qué momento dejas de necesitar capital nuevo, o por qué es legítimo que requieras subsidio permanente?</li>
+      </ol>
+      <p class="tier-sub">Riesgos e indicadores</p>
+      <ol class="q" start="10">
+        <li>¿Cuáles son los tres riesgos que pueden detener el proyecto, con probabilidad y mitigación?</li>
+        <li>¿Cuál es el riesgo del que menos te gusta hablar? Esa la hace siempre la persona más aguda del jurado.</li>
+        <li>¿Qué mides para saber si funcionas, y ya tienes la línea base levantada?</li>
+        <li>¿Qué indicador te haría ajustar el proyecto y cuál te haría cerrarlo?</li>
+      </ol>
+    </div>
+
+    <div class="tier tier-B">
+      <p class="tier-label"><span class="mk mk-b"></span>B · Lo que pregunta quien conoce el sector</p>
+      <ol class="q" start="14">
+        <li>Si te doy la mitad del presupuesto, ¿qué haces? Revela qué es esencial y qué es relleno.</li>
+        <li>Si te doy diez veces el presupuesto, ¿qué haces? Revela si tienes visión de escala o solo un piloto inflado.</li>
+        <li>¿Cuál es tu costo por persona atendida, y cómo se compara con la alternativa que ya existe? Si sale más caro, necesitas una razón muy buena.</li>
+        <li>¿Qué tendría que ser verdad para que este proyecto fracase, y qué probabilidad real le das? Si el equipo no imagina su propio fracaso, no lo ha analizado a fondo.</li>
+      </ol>
+    </div>
+
+    <div class="tier tier-C">
+      <p class="tier-label"><span class="mk mk-c"></span>C · El marco conceptual</p>
+      <ol class="q" start="18">
+        <li>¿Cuál es la prueba más pequeña que puedes correr ya para aprender sin quemar recursos? El experimento mínimo que retira la mayor incertidumbre.</li>
+        <li>¿Cómo articulas el éxito técnico (problema mitigado, ahorro, vidas) con el éxito político (legitimidad, narrativa, retorno reputacional)? Lo solo técnico se queda sin patrocinio; lo solo político, sin sustento.</li>
+        <li>Más allá del dinero, ¿qué recursos extra-monetarios necesitas y de quién: legitimidad, información, autoridad delegada, redes, tiempo de personal senior, ventanas políticas?</li>
+      </ol>
+    </div>
+
+    <div class="llm"><b>Dónde suele fallar el LLM</b>Va a producir un roadmap ambicioso con hitos redondos y a esconder el riesgo incómodo detrás de mitigaciones suaves; y va a reproducir el bug de la plantilla financiera si lo dejan. Revisa que cada hito tenga fecha y responsable, que el modelo cuadre escenario por escenario, y que el riesgo que más te incomoda esté escrito con su nombre.</div>
+  </section>
+
+  <!-- Must-haves -->
+  <section class="dim">
+    <p class="dim-num">Evidencia</p>
+    <h2>Las nueve piezas de evidencia que el panel puede pedir</h2>
+    <p>El temario anterior se contesta con palabras. Estas nueve se contestan mostrando algo. En el DemoDay y en las citas del taller, cualquier persona que retroalimenta tiene derecho a pedirlas. Si falta una, tu proyecto está incompleto por más bueno que sea el deck.</p>
+    <ul class="check">
+      <li><b>MVP funcionando con un ejemplo concreto.</b> Una pieza viva que se pueda tocar en treinta minutos: un chatbot con cinco casos reales, un filtro instalado, una herramienta con dos empresas, una plataforma con tres expedientes.</li>
+      <li><b>Testimonio documentado de una persona beneficiaria real.</b> Alguien específico que ya usó el proyecto y dice por qué le sirvió o no. Audio, video, transcripción o nota firmada. No "encuestamos a cien".</li>
+      <li><b>Conversación documentada con quien tiene poder de decisión.</b> Una reunión real, no un correo. Acta, minuta o grabación con permiso.</li>
+      <li><b>Conversación documentada con quien perdería con el proyecto.</b> La pieza que separa la estrategia real de la ingenua: hablaron con al menos una persona afectada y entienden su lógica.</li>
+      <li><b>Una cifra propia.</b> Un dato que levantaron ustedes, no descargado. Aunque sea pequeño, tiene que ser del equipo.</li>
+      <li><b>Modelo financiero con tres escenarios.</b> Hoja de cálculo, no PDF. Base, optimista y de estrés. Supuestos rastreables. Bug de plantilla corregido.</li>
+      <li><b>Régimen institucional decidido.</b> La figura legal elegida, aunque sea tentativa, con la defensa de por qué esa y no otra.</li>
+      <li><b>Decisión concreta de los próximos treinta días.</b> Qué hacen el lunes que vuelven a su vida. Verificable.</li>
+      <li><b>Una pregunta abierta que no saben contestar.</b> Afirmar que se tiene todo claro suele indicar que aún no se ha examinado a fondo.</li>
+    </ul>
+  </section>
+
+  <!-- Traps -->
+  <section class="dim">
+    <p class="dim-num">Coherencia</p>
+    <h2>Preguntas de coherencia entre dimensiones</h2>
+    <p>Un panel con experiencia no examina cada dimensión por separado; busca las contradicciones entre dos de ellas. Las seis siguientes son las que aparecen con más frecuencia.</p>
+    <ol class="trap">
+      <li><b>Legado contra Comunidad.</b> Dices que tu propósito es empoderar, pero tratas a la población como receptora pasiva. ¿Cuál de las dos es cierta?</li>
+      <li><b>Comunidad contra Contexto.</b> Tu alianza clave vive en el ciclo político que describiste, pero tu hito con ella cae fuera de su calendario presupuestal. ¿Cómo se resuelve?</li>
+      <li><b>Aprendizaje contra Proyectos.</b> Tu mecanismo es activar una reforma, pero no aparece como hito en tu roadmap. ¿Dónde está?</li>
+      <li><b>Tecnología contra Contexto.</b> Tu plataforma opera como dispositivo de salud, pero tu figura legal no contempla la autorización que eso exige. ¿La tienes o no?</li>
+      <li><b>Proyectos contra Comunidad.</b> "Firmar convenio con la alcaldía en septiembre" requiere a una persona que firme. ¿Quién es, y ya hablaste con ella?</li>
+      <li><b>Legado contra Proyectos.</b> Dices que buscas transformación sistémica, pero solo mides adopción. ¿Tu indicador refleja tu propósito o solo lo más fácil de contar?</li>
+    </ol>
+  </section>
+
+  <!-- Transversal -->
+  <section class="dim">
+    <p class="dim-num">Apertura</p>
+    <h2>Preguntas generales de apertura</h2>
+    <p>No corresponden a una dimensión en particular. Cualquier integrante del panel suele plantearlas en los primeros minutos para decidir si conviene profundizar. Conviene tener cada una resuelta en una frase.</p>
+    <ol class="trap">
+      <li>En treinta segundos: ¿qué hace tu proyecto, para quién, y por qué importa?</li>
+      <li>¿Qué hace a tu equipo idóneo para esto?</li>
+      <li>¿Qué es lo más difícil que has aprendido haciendo este proyecto?</li>
+      <li>¿Qué cambió en tu proyecto en los últimos tres meses por algo que descubriste en campo?</li>
+      <li>¿Qué le pedirías hoy a este panel: una conexión, una decisión, capital, una autorización? Sé concreto.</li>
+      <li>Si todo sale bien, ¿cómo se ve el mundo en cinco años? Si todo sale mal, ¿qué pasó?</li>
+    </ol>
+  </section>
+
+  <!-- Killer five -->
+  <div class="killer">
+    <p class="dim-num">Lo esencial</p>
+    <h2>Cinco preguntas centrales</h2>
+    <p class="intro">Si el tiempo solo alcanza para preparar cinco, conviene que sean estas. Resumen el resto del temario.</p>
+    <ol>
+      <li>¿Por qué persiste el problema y quién gana con que persista?</li>
+      <li>¿Cuál es tu mecanismo, en una frase, y por qué ese y no otro?</li>
+      <li>¿Quién pierde si funcionas, y ya hablaste con esa persona?</li>
+      <li>¿Bajo qué figura operas y qué le pasa al proyecto en el próximo cambio de gobierno?</li>
+      <li>¿Qué pieza viva puedes mostrar hoy y qué pregunta todavía no sabes contestar?</li>
+    </ol>
+  </div>
+
+  <!-- Glossary -->
+  <section class="dim">
+    <p class="dim-num">Anexo</p>
+    <h2>Glosario mínimo del marco conceptual</h2>
+    <p>Las fuentes y conceptos que el nivel C invoca, en una línea cada uno, para que los uses con propiedad y no de oídas.</p>
+    <dl class="gloss">
+      <dt>Valor público — Mark Moore</dt>
+      <dd>El beneficio colectivo de una acción pública (equidad, confianza, bienestar democrático), multidimensional y no reducible a una métrica de mercado.</dd>
+      <dt>Estado emprendedor — Mariana Mazzucato</dt>
+      <dd>El Estado como inversor de primera instancia en innovación radical, no solo corrector de fallas de mercado; el riesgo se socializa y el beneficio tiende a privatizarse.</dd>
+      <dt>Liderazgo adaptativo — Ronald Heifetz</dt>
+      <dd>Distingue problemas técnicos (solución conocida, la aplica quien tiene la pericia) de desafíos adaptativos (requieren que las partes cambien valores y conductas). Confundirlos es el error más común del liderazgo.</dd>
+      <dt>Problemas perversos — Rittel y Webber</dt>
+      <dd>Problemas sin definición única ni solución definitiva, con partes en conflicto, donde cada intento de solución genera consecuencias nuevas.</dd>
+      <dt>Tres horizontes</dt>
+      <dd>H1 es el sistema dominante actual; H3, el futuro deseado; H2, la transición donde se experimenta y se escalan los pedazos de futuro que conectan ambos.</dd>
+      <dt>Ambidiestría organizacional — O'Reilly y Tushman</dt>
+      <dd>Equilibrar la explotación de lo que ya funciona con la exploración de lo radicalmente nuevo, con gobernanza y métricas distintas para cada una.</dd>
+      <dt>Modelo del iceberg</dt>
+      <dd>Cuatro niveles de un problema: eventos, patrones, estructuras y modelos mentales. La intervención profunda toca estructuras y modelos mentales, no solo eventos.</dd>
+      <dt>Objetos fronterizos — Star y Griesemer</dt>
+      <dd>Artefactos flexibles (una plataforma, un dashboard, un dato común) que permiten a partes de mundos distintos colaborar sin perder su identidad.</dd>
+      <dt>Política adaptativa — Lempert y Walker</dt>
+      <dd>Decidir bajo incertidumbre profunda con movimientos sin arrepentimiento y disparadores que activan cambios de rumbo cuando se cumplen ciertas condiciones.</dd>
+      <dt>Emprendimiento público — Klein, McGahan, Mahoney y Pitelis</dt>
+      <dd>Innovación en el sector público para crear valor público bajo incertidumbre, con objetivos múltiples mal especificados y mecanismos de selección políticos, no de mercado.</dd>
+    </dl>
+  </section>
+
+  <footer>
+    Documento de examen · Módulo Pública II 2026 · Clase del 8 de junio · Sesión 09, ensayo general · Lenguaje neutral. Un solo temario para los seis equipos.
+  </footer>
+
+</div>
+</body>
+</html>
