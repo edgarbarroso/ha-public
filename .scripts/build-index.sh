@@ -4,7 +4,9 @@
 
 set -euo pipefail
 
-PUB_DIR="$HOME/Documents/ha-public"
+# Parametrizable por canal: publish.sh/unpublish.sh exportan PUB_DIR y REPO_SLUG.
+PUB_DIR="${PUB_DIR:-$HOME/Documents/ha-public}"
+REPO_SLUG="${REPO_SLUG:-edgarbarroso/ha-public}"
 INDEX="$PUB_DIR/index.html"
 
 cd "$PUB_DIR"
@@ -115,7 +117,7 @@ HEAD
   cat <<TAIL
 <hr>
 <footer>
-  Actualizado ${TODAY} · <a href="https://github.com/edgarbarroso/ha-public">repo</a>
+  Actualizado ${TODAY} · <a href="https://github.com/${REPO_SLUG}">repo</a>
 </footer>
 </body>
 </html>
