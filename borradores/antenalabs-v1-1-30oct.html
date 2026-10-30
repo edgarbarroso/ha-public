@@ -23,7 +23,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"Antena Labs","legalName":"Antena Labs, S.C.","url":"https://antenalabs.com/","logo":"https://antenalabs.com/icono-512.png","foundingDate":"2016","email":"info@antenalabs.com","description":"Antena Labs, S.C. Desde 2016. Inteligencia artificial, desarrollo de software, datos y machine learning, y capacitación tecnológica, de la estrategia a la implementación."}</script>
 <style>
-/* v1.2 · cinco estaciones de una pantalla, como el demo del panel AEA.
+/* v1.3 · cinco estaciones de una pantalla, como el demo del panel AEA.
    00 el punteado del símbolo · 01 cuatro escenas chicas, una por línea de trabajo (documento citado, arquitectura,
    modelo que se entrena en vivo, árbol de aprendizaje) · 02 los cuatro niveles de un proyecto de IA, con el punto en
    el que deciden las personas como único acento · 03 la capacidad que pasa al equipo · 04 red de comunidad por fuerzas.
@@ -88,12 +88,12 @@ section.st > .w{position:relative;z-index:2}
 
 /* el texto de cada estación entra por líneas la primera vez que se ve; sin animación al pasar de largo o si el
    sistema pide menos movimiento. Solo con JavaScript (html.js): sin él, todo es visible desde el principio */
-.js .rev{opacity:0;transform:translateY(.5em)}
-.js .vista .rev{opacity:1;transform:none;transition:opacity .6s cubic-bezier(.2,.6,.2,1),transform .6s cubic-bezier(.2,.6,.2,1);transition-delay:min(calc(var(--i,0) * 60ms),420ms)}
+.js .rev{opacity:0;transform:translateY(.6em)}
+.js .vista .rev{opacity:1;transform:none;transition:opacity .9s cubic-bezier(.22,.61,.36,1),transform .9s cubic-bezier(.22,.61,.36,1);transition-delay:min(calc(var(--i,0) * 70ms),490ms)}
 .js .vista.ya .rev{transition:none}
 
 /* rótulos de los grafos: el script los coloca en fracciones de la escena */
-.rot{position:absolute;font-family:var(--fm);font-size:clamp(10px,.72em,12px);letter-spacing:.04em;text-transform:uppercase;line-height:1.3;color:var(--mid);width:max-content;max-width:38%;transform:translate(-.1em,calc(-100% - .9em));pointer-events:none;transition:opacity .5s}
+.rot{position:absolute;font-family:var(--fm);font-size:clamp(10px,.72em,12px);letter-spacing:.04em;text-transform:uppercase;line-height:1.3;color:var(--mid);width:max-content;max-width:38%;transform:translate(-.1em,calc(-100% - .9em));pointer-events:none;transition:opacity .8s cubic-bezier(.22,.61,.36,1)}
 .st:not(.activa) .rot{opacity:0}
 .rot.der{width:14ch;max-width:none;transform:translate(-100%,calc(-100% - .9em));text-align:right}
 .rot.cen{width:auto;transform:translate(-50%,1em);text-align:center;white-space:nowrap}
@@ -598,9 +598,12 @@ body.oscuro .pista{color:#a8a8a8}
   let N = 0, P = [], W = 0, H = 0, raton = {x: -1e4, y: -1e4}, tono = 0, formas = {}, cambio = 0, previa = -1, faseVista = -1, tinta = 40, papel = 255, rs = [];
   const nueva = () => ({x: Math.random() * innerWidth, y: Math.random() * innerHeight, vx: 0, vy: 0, a: 0,
     f: Math.random() * 6.28, g: Math.random() < .14, s: Math.random() < .07 ? 2.1 : 1.5, u: Math.random(), v: Math.random(), k: Math.random()});
-  const lienzo = () => {                                      // tamaño del lienzo en px, igual al de la pantalla visible
-    const dpr = Math.min(devicePixelRatio || 1, 2); W = innerWidth; H = innerHeight;
-    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); cv.style.width = W + 'px'; cv.style.height = H + 'px';
+  let anchoLienzo = 0, altoLienzo = 0;
+  const lienzo = () => {                                      // tamaño del lienzo en px; si solo cambia el alto (la barra del navegador), crece y no se rehace
+    const dpr = Math.min(devicePixelRatio || 1, 2), mismoAncho = innerWidth === anchoLienzo; W = innerWidth; H = innerHeight;
+    if (mismoAncho && H <= altoLienzo) return;
+    altoLienzo = mismoAncho ? Math.max(H, altoLienzo) : H; anchoLienzo = W;
+    cv.width = Math.round(W * dpr); cv.height = Math.round(altoLienzo * dpr); cv.style.width = W + 'px'; cv.style.height = altoLienzo + 'px';
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   };
   const armar = () => {
@@ -696,18 +699,21 @@ body.oscuro .pista{color:#a8a8a8}
     trazo(a); ctx.setLineDash(punteo); ctx.beginPath(); ctx.moveTo(...ext[0]); ctx.lineTo(...ext[1]); ctx.stroke(); ctx.setLineDash([]);
   };
 
+  // RESORTE y FRENO dan una llegada amortiguada: 90 % del camino en ~0.45 s y sin pasarse (antes .05 y .83: se pasaba 22 % y regresaba).
+  // GRAV curva la trayectoria hacia abajo mientras la partícula viaja y la deja caer cuando sale de la figura.
+  const RESORTE = .024, FRENO = .74, GRAV = .8;
   const t0 = performance.now(); let ultimoY = scrollY;
   const dibujar = ahora => {
     const t = (ahora - t0) / 1000, tv = quieto ? 0 : t, st = estaciones[activa], forma = st.dataset.forma;
     const r = st.querySelector('.escena, .lineas').getBoundingClientRect();
     if (activa !== previa) { previa = activa; cambio = ahora; }
-    tono += ((st.classList.contains('oscuro') ? 1 : 0) - tono) * (quieto ? 1 : .08);
+    tono += ((st.classList.contains('oscuro') ? 1 : 0) - tono) * (quieto ? 1 : .06);
     tinta = Math.round(40 + tono * 215); papel = Math.round(255 - tono * 215);
     const gris = Math.round(145 - tono * 25), aparece = quieto ? 1 : clamp((ahora - cambio) / 1200), asentado = quieto || ahora - cambio > 1200;
     if (forma === 'servicios') { rs = minis.map(m => m.getBoundingClientRect()); entrenar(t); }
-    ctx.clearRect(0, 0, W, H); ctx.lineWidth = 1;
-    const dy = scrollY - ultimoY; ultimoY = scrollY;           // al desplazarse, las partículas se mueven con la página y no se quedan atrás
-    if (dy && !quieto) for (const p of P) p.y -= dy;
+    ctx.clearRect(0, 0, W, altoLienzo); ctx.lineWidth = 1;
+    const dScroll = scrollY - ultimoY; ultimoY = scrollY;      // al desplazarse, las partículas se mueven con la página y no se quedan atrás
+    if (dScroll && !quieto) for (const p of P) p.y -= dScroll;
 
     // primero se mueven las partículas, luego se trazan las aristas con esas posiciones y al final los nodos
     for (let i = 0; i < P.length; i++) {
@@ -716,13 +722,17 @@ body.oscuro .pista{color:#a8a8a8}
       else if (asentado && esPaquete(forma, i)) {
         if (Math.hypot(tx - p.x, ty - p.y) > 24) { p.x = tx; p.y = ty; p.a = 0; } else { p.x += (tx - p.x) * .4; p.y += (ty - p.y) * .4; }
         p.vx = p.vy = 0;
-      } else {
-        let ax = (tx - p.x) * .05, ay = (ty - p.y) * .05;
+      } else if (a === 0) {                                    // sale de la figura: cae con gravedad mientras se apaga; ya apagada, espera quieta
+        if (p.a < .03) { p.x = tx; p.y = ty; p.vx = p.vy = 0; }
+        else { p.vx *= .96; p.vy = p.vy * .985 + GRAV * .8; p.x += p.vx; p.y += p.vy; }
+      } else {                                                 // va a su lugar: amortiguado, sin rebote, y cae en arco mientras viaja
+        const lejos = Math.min(1, Math.hypot(tx - p.x, ty - p.y) / 140);
+        let ax = (tx - p.x) * RESORTE, ay = (ty - p.y) * RESORTE + GRAV * lejos;
         const dx = p.x - raton.x, dy = p.y - raton.y, d2 = dx * dx + dy * dy;
-        if (d2 < 4900) { const k = (1 - d2 / 4900) * 2.4 / Math.sqrt(d2 + .01); ax += dx * k; ay += dy * k; }
-        p.vx = (p.vx + ax) * .83; p.vy = (p.vy + ay) * .83; p.x += p.vx; p.y += p.vy;
+        if (d2 < 4900) { const k = (1 - d2 / 4900) * 1.4 / Math.sqrt(d2 + .01); ax += dx * k; ay += dy * k; }
+        p.vx = (p.vx + ax) * FRENO; p.vy = (p.vy + ay) * FRENO; p.x += p.vx; p.y += p.vy;
       }
-      p.a += (a - p.a) * (quieto ? 1 : .1);
+      p.a += (a - p.a) * (quieto ? 1 : .07);
     }
 
     // aristas
