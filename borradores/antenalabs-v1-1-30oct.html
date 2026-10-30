@@ -86,15 +86,16 @@ section.st > .w{position:relative;z-index:2}
 .st.oscuro h2,.st.oscuro h4{color:#fff}
 .st.oscuro p{color:#c4c4c4}
 
-/* el texto de cada estación entra por líneas la primera vez que se ve; sin animación al pasar de largo o si el
-   sistema pide menos movimiento. Solo con JavaScript (html.js): sin él, todo es visible desde el principio */
-.js .rev{opacity:0;transform:translateY(.6em)}
-.js .vista .rev{opacity:1;transform:none;transition:opacity .9s cubic-bezier(.22,.61,.36,1),transform .9s cubic-bezier(.22,.61,.36,1);transition-delay:min(calc(var(--i,0) * 70ms),490ms)}
+/* el texto de cada estación entra por líneas la primera vez que se ve: baja desde arriba y se enfoca, como las
+   partículas que se depositan en la figura. Sin animación al pasar de largo o si el sistema pide menos movimiento.
+   Solo con JavaScript (html.js): sin él, todo es visible desde el principio */
+.js .rev{opacity:0;transform:translateY(-.5em);filter:blur(5px)}
+.js .vista .rev{opacity:1;transform:none;filter:none;transition:opacity .9s cubic-bezier(.3,0,.2,1),transform 1.1s cubic-bezier(.5,0,.15,1),filter .9s cubic-bezier(.3,0,.2,1);transition-delay:min(calc(var(--i,0) * 80ms),560ms)}
 .js .vista.ya .rev{transition:none}
 
 /* rótulos de los grafos: el script los coloca en fracciones de la escena */
-.rot{position:absolute;font-family:var(--fm);font-size:clamp(10px,.72em,12px);letter-spacing:.04em;text-transform:uppercase;line-height:1.3;color:var(--mid);width:max-content;max-width:38%;transform:translate(-.1em,calc(-100% - .9em));pointer-events:none;transition:opacity .8s cubic-bezier(.22,.61,.36,1)}
-.st:not(.activa) .rot{opacity:0}
+.rot{position:absolute;font-family:var(--fm);font-size:clamp(10px,.72em,12px);letter-spacing:.04em;text-transform:uppercase;line-height:1.3;color:var(--mid);width:max-content;max-width:38%;transform:translate(-.1em,calc(-100% - .9em));pointer-events:none;translate:0 0;transition:opacity .8s cubic-bezier(.3,0,.2,1),translate 1.1s cubic-bezier(.5,0,.15,1)}
+.st:not(.activa) .rot{opacity:0;translate:0 -.6em}
 .rot.der{width:14ch;max-width:none;transform:translate(-100%,calc(-100% - .9em));text-align:right}
 .rot.cen{width:auto;transform:translate(-50%,1em);text-align:center;white-space:nowrap}
 .rot.dentro{width:auto;transform:translate(.55em,.5em)}
@@ -184,7 +185,8 @@ body.oscuro .pista{color:#a8a8a8}
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   nav{scroll-behavior:auto}
-  .js .rev{opacity:1;transform:none;transition:none}
+  .js .rev{opacity:1;transform:none;filter:none;transition:none}
+  .rot{transition:none}
   .pasos.vivo > div{border-top-color:var(--ink);transition:none}
   .pasos.vivo h3{color:var(--ink);transition:none}
 }
@@ -595,8 +597,9 @@ body.oscuro .pista{color:#a8a8a8}
     }
   };
 
-  let N = 0, P = [], W = 0, H = 0, raton = {x: -1e4, y: -1e4}, tono = 0, formas = {}, cambio = 0, previa = -1, faseVista = -1, tinta = 40, papel = 255, rs = [];
-  const nueva = () => ({x: Math.random() * innerWidth, y: Math.random() * innerHeight, vx: 0, vy: 0, a: 0,
+  let N = 0, P = [], W = 0, H = 0, raton = {x: -1e4, y: -1e4}, tono = 0, formas = {}, cambio = 0, previa = -1, rapido = false, faseVista = -1, tinta = 40, papel = 255, rs = [];
+  // e: 0 en su lugar · 1 en vuelo hacia la figura (sale de sx, sy en el instante ini y tarda dur) · 2 cae fuera de la figura
+  const nueva = () => ({x: Math.random() * innerWidth, y: Math.random() * innerHeight, vx: 0, vy: 0, a: 0, e: 0, sx: 0, sy: 0, ini: 0, dur: 1, h: 0,
     f: Math.random() * 6.28, g: Math.random() < .14, s: Math.random() < .07 ? 2.1 : 1.5, u: Math.random(), v: Math.random(), k: Math.random()});
   let anchoLienzo = 0, altoLienzo = 0;
   const lienzo = () => {                                      // tamaño del lienzo en px; si solo cambia el alto (la barra del navegador), crece y no se rehace
@@ -699,40 +702,80 @@ body.oscuro .pista{color:#a8a8a8}
     trazo(a); ctx.setLineDash(punteo); ctx.beginPath(); ctx.moveTo(...ext[0]); ctx.lineTo(...ext[1]); ctx.stroke(); ctx.setLineDash([]);
   };
 
-  // RESORTE y FRENO dan una llegada amortiguada: 90 % del camino en ~0.45 s y sin pasarse (antes .05 y .83: se pasaba 22 % y regresaba).
-  // GRAV curva la trayectoria hacia abajo mientras la partícula viaja y la deja caer cuando sale de la figura.
-  const RESORTE = .024, FRENO = .74, GRAV = .8;
-  const t0 = performance.now(); let ultimoY = scrollY;
+  // Gravedad. Al cambiar de estación, las partículas que dejan la figura se sueltan una tras otra y caen mientras se
+  // apagan, cada una con su peso. Las de la figura nueva despegan, viajan en arco y bajan a su lugar desde arriba; las
+  // que estaban apagadas caen desde arriba de su lugar. La figura se llena de abajo hacia arriba. Sin rebote: el vuelo
+  // termina con velocidad cero. RESORTE y FRENO solo sostienen la figura ya formada (y el apartarse del ratón).
+  const RESORTE = .024, FRENO = .74, GRAV = .3, AIRE = .965;
+  const caida = u => u * u * u * (4 - 3 * u);                  // acelera como algo que cae y frena al posarse: velocidad máxima a 2/3
+  const suave = u => u * u * (3 - 2 * u);
+  const despegar = (p, tx, ty, a, r, ahora) => {
+    if (a === 0) {
+      if (p.a > .03) { p.e = 2; p.ini = ahora + (rapido ? 0 : p.k * 320); p.vx = (p.u - .5) * .8; p.vy = 0; } else p.e = 0;
+      return;
+    }
+    const abajo = clamp((ty - r.top) / Math.max(1, r.height));
+    if (p.a < .05) { p.sx = tx + (p.u - .5) * 12; p.sy = ty - 70 - 130 * p.k; p.x = p.sx; p.y = p.sy; }
+    else { p.sx = p.x; p.sy = Math.max(-30 - 90 * p.k, Math.min(H + 30 + 90 * p.k, p.y)); p.x = p.sx; p.y = p.sy; }   // la figura anterior ya salió de la pantalla: entra desde el borde
+    // si viene de arriba, solo cae; si viene de abajo o de un lado, despega y describe un arco
+    p.h = p.sy < ty - 40 ? 0 : Math.min(120, 30 + Math.hypot(tx - p.sx, ty - p.sy) * .16);
+    p.ini = ahora + (rapido ? 0 : (1 - abajo) * 300 + p.k * 200);
+    p.dur = rapido ? 550 : 850 + 400 * clamp(Math.hypot(tx - p.sx, ty - p.sy) / 900);
+    p.e = 1;
+  };
+  const t0 = performance.now(); let ultimoY = scrollY, ultimo = t0;
   const dibujar = ahora => {
     const t = (ahora - t0) / 1000, tv = quieto ? 0 : t, st = estaciones[activa], forma = st.dataset.forma;
     const r = st.querySelector('.escena, .lineas').getBoundingClientRect();
-    if (activa !== previa) { previa = activa; cambio = ahora; }
+    const nuevo = activa !== previa;                            // navegar rápido (menos de 450 ms entre estaciones): sin escalonar
+    if (nuevo) { rapido = previa >= 0 && ahora - cambio < 450; previa = activa; cambio = ahora; }
+    const dt = Math.min(3, (ahora - ultimo) / 16.67); ultimo = ahora;
     tono += ((st.classList.contains('oscuro') ? 1 : 0) - tono) * (quieto ? 1 : .06);
     tinta = Math.round(40 + tono * 215); papel = Math.round(255 - tono * 215);
-    const gris = Math.round(145 - tono * 25), aparece = quieto ? 1 : clamp((ahora - cambio) / 1200), asentado = quieto || ahora - cambio > 1200;
+    const gris = Math.round(145 - tono * 25), aparece = quieto ? 1 : clamp((ahora - cambio - (rapido ? 0 : 500)) / 1100);
     if (forma === 'servicios') { rs = minis.map(m => m.getBoundingClientRect()); entrenar(t); }
     ctx.clearRect(0, 0, W, altoLienzo); ctx.lineWidth = 1;
     const dScroll = scrollY - ultimoY; ultimoY = scrollY;      // al desplazarse, las partículas se mueven con la página y no se quedan atrás
-    if (dScroll && !quieto) for (const p of P) p.y -= dScroll;
+    if (dScroll && !quieto) for (const p of P) { p.y -= dScroll; p.sy -= dScroll; }
 
     // primero se mueven las partículas, luego se trazan las aristas con esas posiciones y al final los nodos
     for (let i = 0; i < P.length; i++) {
       const p = P[i], [tx, ty, a] = objetivo(p, i, forma, r, tv);
-      if (quieto) { p.x = tx; p.y = ty; }
-      else if (asentado && esPaquete(forma, i)) {
+      if (quieto) { p.x = tx; p.y = ty; p.a = a; continue; }
+      if (nuevo) despegar(p, tx, ty, a, r, ahora);
+      if (p.e === 1) {                                         // en vuelo: arco que despega hacia arriba y baja a su lugar
+        const u = (ahora - p.ini) / p.dur;
+        if (u <= 0) { p.x = p.sx; p.y = p.sy; continue; }      // espera su turno
+        if (u >= 1) { p.x = tx; p.y = ty; p.vx = p.vy = 0; p.e = 0; }
+        else {
+          const e = p.h ? suave(u) : caida(u), f = 1 - e, b0 = f * f * f, b1 = 3 * f * f * e, b2 = 3 * f * e * e, b3 = e * e * e;
+          p.x = (b0 + b1) * p.sx + (b2 + b3) * tx;
+          p.y = b0 * p.sy + b1 * (p.sy - p.h * .45) + b2 * (ty - p.h) + b3 * ty;
+        }
+        p.a += (a - p.a) * Math.min(1, .06 * dt);
+        continue;
+      }
+      if (p.e === 2) {                                         // cae fuera de la figura mientras se apaga; apagada, espera quieta
+        if (ahora < p.ini) continue;
+        p.vx *= AIRE ** dt; p.vy = p.vy * AIRE ** dt + GRAV * (.6 + .8 * p.v) * dt; p.x += p.vx * dt; p.y += p.vy * dt;
+        p.a *= .965 ** dt;
+        if (p.a < .02) { p.e = 0; p.a = 0; p.x = tx; p.y = ty; p.vx = p.vy = 0; }
+        continue;
+      }
+      if (a === 0) {
+        if (p.a > .03) { p.e = 2; p.ini = ahora; p.vx = p.vy = 0; } else { p.x = tx; p.y = ty; p.a = 0; }
+        continue;
+      }
+      if (esPaquete(forma, i)) {
         if (Math.hypot(tx - p.x, ty - p.y) > 24) { p.x = tx; p.y = ty; p.a = 0; } else { p.x += (tx - p.x) * .4; p.y += (ty - p.y) * .4; }
         p.vx = p.vy = 0;
-      } else if (a === 0) {                                    // sale de la figura: cae con gravedad mientras se apaga; ya apagada, espera quieta
-        if (p.a < .03) { p.x = tx; p.y = ty; p.vx = p.vy = 0; }
-        else { p.vx *= .96; p.vy = p.vy * .985 + GRAV * .8; p.x += p.vx; p.y += p.vy; }
-      } else {                                                 // va a su lugar: amortiguado, sin rebote, y cae en arco mientras viaja
-        const lejos = Math.min(1, Math.hypot(tx - p.x, ty - p.y) / 140);
-        let ax = (tx - p.x) * RESORTE, ay = (ty - p.y) * RESORTE + GRAV * lejos;
+      } else {
+        let ax = (tx - p.x) * RESORTE, ay = (ty - p.y) * RESORTE;
         const dx = p.x - raton.x, dy = p.y - raton.y, d2 = dx * dx + dy * dy;
         if (d2 < 4900) { const k = (1 - d2 / 4900) * 1.4 / Math.sqrt(d2 + .01); ax += dx * k; ay += dy * k; }
         p.vx = (p.vx + ax) * FRENO; p.vy = (p.vy + ay) * FRENO; p.x += p.vx; p.y += p.vy;
       }
-      p.a += (a - p.a) * (quieto ? 1 : .07);
+      p.a += (a - p.a) * Math.min(1, .07 * dt);
     }
 
     // aristas
